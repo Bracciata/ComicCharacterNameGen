@@ -1,11 +1,9 @@
-import pandas as pd
 import numpy as np
-import re
 import util
-# Make numpy values easier to read.
+import model
+# Make numpy values easier to read according to online docs we found
 np.set_printoptions(precision=3, suppress=True)
-# import tensorflow as tf
-# from tensorflow.keras import layers
+
 names = util.getSuperHeroNameList()
 print(names)
 print('Total marked distinct characters: '+ str(len(names)))
@@ -19,3 +17,13 @@ binaryMatrix = util.createBinaryMatrix(nameElements,MAX_NAME_LENGTH,indexToChar,
 
 # Generating test train
 xTrain, yTrain, xTest, yTest = util.createXYTrainTest(binaryMatrix)
+rnnModel = model.RNNModelWithLSTM(xTrain,charToIndex,indexToChar,MAX_NAME_LENGTH)
+rnnModel.train_model(xTrain,yTrain)
+
+# Evaluating the model
+metrics = rnnModel.model.evaluate(x=xTest, y=yTest, batch_size=100)
+
+print("RNN with LSTM Model metrics: ")
+# This is directly from Canadian Name Generation
+for m_name, m in zip(rnnModel.model.metrics_names, metrics):
+    print("{}: {}".format(m_name, m))
