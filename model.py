@@ -31,13 +31,15 @@ class RNNModelWithLSTM: # Model is based on the canadian name generator with var
         return "".join(generated)
     def train_model(self,xTrain,yTrain):
         # 5 being the number of epochs
-        for _ in range(5):
+        for epoch in range(5):
+            print("Epoch "+str(epoch))
             # Fitting the model
             self.model.fit(x=xTrain, y=yTrain, batch_size=500, epochs=1, verbose=1)
 
             # Generate ten names of lengths from five chars to max length
             for i in range(10):
-                print(i)
                 length = random.randint(10,self.maxLength)
+                print(f'Epoch {epoch} Name {i} of Length {length}')
+                # Note output String length is less than length specified due to removal of new line characters
                 print(self.predict(length).replace("\n",''))
         print("Training complete!")
