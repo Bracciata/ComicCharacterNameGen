@@ -1,7 +1,7 @@
 import tensorflow as tf
 import keras
-from keras.models import Sequential, load_model
-from keras.layers import Dense, LSTM, TimeDistributed, Activation
+from keras.models import Sequential
+from keras.layers import Dense, LSTM
 import numpy as np
 import random
 class RNNModelWithLSTM: # Model is based on the canadian name generator with variawble name changes to match our styling, parameter changes, and format changes
@@ -10,10 +10,12 @@ class RNNModelWithLSTM: # Model is based on the canadian name generator with var
         self.charToIndex= charToIndex
         self.indexToChar = indexToChar
         self.model = Sequential([
-            LSTM(99, input_shape=(None, train.shape[2]), return_sequences=True),
-            TimeDistributed(Dense(len(charToIndex), activation="softmax"))
+            Dense(100),
+            Dense(50),
+            LSTM(111, input_shape=(None, train.shape[2]), return_sequences=True),
+            Dense(len(charToIndex), activation="softmax")
         ])
-        self.model.compile("rmsprop", loss="categorical_crossentropy", metrics=["accuracy"])
+        self.model.compile("adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
     def predict(self,length):
         xPrediction = np.zeros((1, length, len(self.charToIndex)))
@@ -31,7 +33,7 @@ class RNNModelWithLSTM: # Model is based on the canadian name generator with var
         return "".join(generated)
     def train_model(self,xTrain,yTrain):
         # 5 being the number of epochs
-        for epoch in range(5):
+        for epoch in range(10):
             print("Epoch "+str(epoch))
             # Fitting the model
             self.model.fit(x=xTrain, y=yTrain, batch_size=500, epochs=1, verbose=1)
